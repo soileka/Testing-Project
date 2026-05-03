@@ -1,0 +1,116 @@
+
+#******************** Settings ************************
+
+*** Settings ***
+
+Documentation	Testing Issue creation scenarios.
+
+Pre Condition 	Browser is open, user is logged in GitLab, project must be created beforehand by the user
+Post Condition	User is logged out of GitLab, browser is closed
+Tags		Issue, TS-4-Issue
+
+#******************* Common Variables ********************
+
+*** Variables ***
+
+WorkItems_Url= https://gitlab.com/userte-group/testproject/-/work_items
+TypeIssue= Issue
+IssueTitle= issue1
+NewIssueTitle= issue2
+Empty= 
+TooLongTitle= qwertyuiopåasdfghjklöäzxcvbnmqwertyuiopåasdfghjklöäzxcvbnmqwertyuiopåasdfghjklöäzxcvbnmqwertyuiopåasdfghjklöäzxcvbnmqwertyuiopåasdfghjklöäzxcvbnmqwertyuiopåasdfghjklöäzxcvbnmqwertyuiopåasdfghjklöäzxcvbnmqwertyuiopåasdfghjklöäzxcvbnmqwertyuiopåasdfghjklöäzxcvbnm
+
+#******************** Test Cases *************************
+
+*** Test Case ***
+
+# Positive Tests
+
+Title: New issue
+Description: Verifies that the user can create a new issue for a project
+Precondition: Browser is open, user is logged in GitLab, project must be created beforehand by the user
+Steps:
+	Navigate to Work items page		WorkItems_Url
+	Select New item
+	Select Type						TypeIssue
+	Input Title						IssueTitle
+	Submit Create Issue
+	Verify that the issue has been created
+	Verify that the message "Issue created." is shown
+		
+Postcondition: The user has successfully created an issue for a project
+
+
+Title: Changing title
+Description: Verifies that the user can change the issues title
+Precondition: Browser is open, user is logged in GitLab, project must be created beforehand by the user
+Steps:
+	Navigate to Work items page		WorkItems_Url
+	Select issue					IssueTitle
+	Select Edit
+	Input new Title					NewIssueTitle
+	Submit Save changes
+	Verify that the issue's title has been updated
+
+Postcondition: The user has successfully changes the issue's title
+
+
+Title: New issue with same title
+Description: Verifies that the user can create a new issue with a title that is already in use
+Precondition: Browser is open, user is logged in GitLab, project must be created beforehand by the user
+Steps:
+	Navigate to Work items page		WorkItems_Url
+	Select New item
+	Select Type						TypeIssue
+	Input Title						NewIssueTitle
+	Submit Create Issue
+	Verify that the issue has been created
+	Verify that the message "Issue created." is shown
+
+Postcondition: The user has successfully created an issue with a title that was already in use
+
+
+Title: Delete issue
+Description: Verifies that the user can delete an issue
+Precondition: Browser is open, user is logged in GitLab, project must be created beforehand by the user
+Steps:
+	Navigate to Work items page		WorkItems_Url
+	Select Issue					NewIssueTitle
+	Open options
+	Select Delete Issue
+	Submit Delete Issue
+	Verify that the issue has been deleted
+
+Postcondition: The user has successfully deleted an issue
+
+
+# Negative Tests
+
+Title: Empty Title
+Description: Verifies that the user cannot create an issue without title
+Precondition: Browser is open, user is logged in GitLab, project must be created beforehand by the user
+Steps:
+	Navigate to Work items page		WorkItems_Url
+	Select New item
+	Select Type						TypeIssue
+	Input Title						Empty
+	Submit Create Issue
+	Verify that the issue was not created
+	Verify that the Title field is highlighted and an error message "A title is required" is shown
+
+Postcondition: The user is unable to create an issue without a title
+
+
+Title: Title too long
+Description: Verifies that the user cannot create an issue with too long title (over 255 characters)
+Precondition: Browser is open, user is logged in GitLab, project must be created beforehand by the user
+Steps:
+	Navigate to Work items page		WorkItems_Url
+	Select New item
+	Select Type						TypeIssue
+	Input Title						TooLongTitle
+	Verify that the Create Issue button cannot be pressed
+	Verify that the Title field is highlighted and the error message "6 characters over limit." is shown
+
+Postcondition: The user is unable to create an issue with too long title
+

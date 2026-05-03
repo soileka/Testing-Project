@@ -1,0 +1,299 @@
+
+#******************** Settings ************************
+
+*** Settings ***
+
+Documentation	Testing project page functionality with different operations. Project test scenario with valid and invalid test cases.
+
+Pre Condition	Browser is open, user is logged in GitLab
+Post Condition	User is logged out of GitLab, browser is closed
+Tags		Project, TS-3-Project
+
+#******************* Common Variables ********************
+
+*** Variables ***
+
+Projects_Url= https://gitlab.com/dashboard/projects
+BlankProjectName= Testproject
+ProjectGroup= userte-group
+ProjectUser= userte
+BlankSlug= testproject
+VisibilityPrivate= Private
+VisibilityInternal= Internal
+VisibilityPublic= Public
+ConfigurationREADMEPositive= select
+TemplateSelection= Ruby on Rails
+TemplateProjectName= Templatetest
+TemplateSlug= templatetest
+TemplateProject_Url= https://gitlab.com/userte-group/templatetest
+NewTemplateProjectName= NewTemplatetest
+TemplateUrlPart= userte-group/templatetest
+Inactive_Url= https://gitlab.com/dashboard/projects/inactive
+DeletePermanentlyUrlPart= userte-group/templatetest-deletion_scheduled-81646652
+Users= User Tester
+InactiveProjects_Url= https://gitlab.com/dashboard/projects/inactive
+ProjectSlug= project
+TestProject= Test
+Invalid_ProjectName= !project
+Empty= 
+
+#******************** Test Cases *************************
+
+*** Test Case ***
+
+# Positive Tests
+
+Title: New blank project
+Description: Verifies that user can create a new blank project with valid data
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page		Projects_Url
+	Select New project		
+	Select Create Blank project	
+	Input Project name				BlankProjectName
+	Select Project Group or User	ProjectGroup
+	Verify or Edit Project slug		BlankSlug
+	Select Visibility Level			VisibilityPrivate
+	Select Project Configuration	ConfigurationREADMEPositive
+	Submit Create project Form
+	Verify Blank Project is created
+		
+Postcondition: Blank Project is successfully created and added to the user's project list
+
+
+Title: New template project
+Description: Verifies that user can create a new template project with valid data
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page		Projects_Url
+	Select New project		
+	Select Create from template	
+	Select template					TemplateSelection
+	Input Project name				TemplateProjectName
+	Select Project Group or User	ProjectGroup
+	Verify or Edit Project slug		TemplateSlug
+	Select Visibility Level			VisibilityPrivate
+	Submit Create project Form
+	Verify Template Project is created
+	Verify success message "Project was successfully imported" is displayed
+		
+Postcondition: Template project is successfully imported and added to the user's project list
+
+
+Title: Update project name
+Description: Verifies that the user can update the name of a project
+Precondition: Browser is open, user is logged in GitLab
+Steps: 
+	Navigate to Template Project page	TemplateProject_Url
+	Select options menu
+	Select Edit
+	Input new name in Project name		NewTemplateProjectName
+	Submit by Save changes
+	Verify project name is updated
+	Verify success message "Project was successfully updated" is displayed
+	
+Postcondition: The template project's name is successfully updated
+
+
+Title: Delete project
+Description: Verifies that the user can delete a project
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Template Project page	TemplateProject_Url
+	Select options menu
+	Select Delete	
+	Input given text					TemplateUrlPart
+	Submit by Yes, delete project		
+	Verify template project has been moved to pending deletion
+	Verify message "Templatetest moved to pending deletion" is displayed
+	Navigate to inactive projects		Inactive_Url
+	Select project awaiting deletion	TemplateProjectName
+	Select options menu	
+	Select delete permanently		
+	Input given text					DeletePermanentlyUrlPart
+	Select permanent deletion option	
+	Submit by Yes, delete project
+	Verify template project is being deleted
+	Verify message "Templatetest-deletion_scheduled-81646652 is being deleted" is displayed
+
+Postcondition: The Template project has been successfully deleted
+
+
+Title: Change project visibility
+Description: Verifies that the user can change the visibility of an existing project
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page	Projects_Url
+	Select existing project		BlankProjectName
+	Select options menu
+	Select Edit
+	Select Visibility, project features, permissions
+	Select Project visibility
+	Select Public				VisibilityPublic
+	Submit by Save changes button
+	Verify that project has been updated
+	Verify success message "Project 'Testproject' was successfully updated" is displayed
+
+Postcondition: The project's visibility has been successfully changed
+
+
+Title: Transfer project
+Description: Verifies that the user can transfer the project
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page		Projects_Url
+	Select existing project			BlankProjectName
+	Select options menu
+	Select Transfer
+	Select destination namespace	Users
+	Select option "I understand that the URL will change from ProjectGroup/BlankSlug to ProjectUser/BlankSlug"
+	Submit by Transfer button
+	Verify that the project has been transferred
+	Verify success message "Project 'ProjectGroup/BlankSlug' was moved to 'ProjectUser/BlankSlug'. Please update any links and bookmarks that may still have the old path." is displayed
+
+Postcondition: The project has been successfully transferred
+
+
+Title: Archive project
+Description: Verifies that the user can archive a project
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page	Projects_Url
+	Select existing project		BlankProjectName
+	Select options menu
+	Select Archive
+	Verify that the project is archived
+	Verify success message "This project is archived. Its data is read-only" is displayed
+
+Postcondition: The project has been successfully archived
+
+
+Title: Unarchive project
+Description: Verifies that the user can unarchive a project
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Inactive projects page	InactiveProjects_Url
+	Select project 						BlankProjectName
+	Select options menu
+	Select Unarchive
+	Verify that the project is successfully unarchived
+
+Postcondition: The project is successfully unarchived
+
+
+
+# Negative Tests
+
+
+Title: Project without name
+Description: Verifies that the user cannot create a project without project name
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page		Projects_Url
+	Select New project		
+	Select Create Blank project	
+	Input Project name				Empty
+	Select Project Group or User	ProjectGroup
+	Verify or Edit Project slug		Empty
+	Select Visibility Level			VisibilityPrivate
+	Select Project Configuration	ConfigurationREADMEPositive
+	Submit Create project Form
+	Verify that hte project could not be made
+	Verify that the Project name field is highlighted and the message "Please fill out this field." is shown
+
+Postcondition: The user is unable to create a project without inserting project name
+
+
+Title: Project with taken name
+Description: Verifies that the user cannot create a project with the same name as a previous project
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page		Projects_Url
+	Select New project		
+	Select Create Blank project	
+	Input Project name				BlankProjectName
+	Select Project Group or User	ProjectGroup
+	Verify or Edit Project slug		ProjectSlug
+	Select Visibility Level			VisibilityPrivate
+	Select Project Configuration	ConfigurationREADMEPositive
+	Submit Create project Form
+	Verify that the project could not be made
+	Verify that the error message "The form contains the following errors: Project namespace name has already been taken, Name has already been taken" is shown
+
+Postcondition: The user is unable to create the project with a taken name
+
+
+Title: Project with taken path
+Description: Verifies that the user cannot create a project with taken path/slug
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page		Projects_Url
+	Select New project		
+	Select Create Blank project	
+	Input Project name				TestProject
+	Select Project Group or User	ProjectGroup
+	Verify or Edit Project slug		BlankSlug
+	Select Visibility Level			VisibilityPrivate
+	Select Project Configuration	ConfigurationREADMEPositive
+	Submit Create project Form
+	Verify that the project could not be made
+	Verify that the error message "The form contains the following error: Path has already been taken" is shown
+
+Postcondition: The user is unable to create a project with taken slug/path
+
+
+Title: Project with invalid name
+Description: Verifies that the user cannot create a project with invalid project name
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page		Projects_Url
+	Select New project		
+	Select Create Blank project	
+	Input Project name				Invalid_ProjectName
+	Select Project Group or User	ProjectGroup
+	Verify or Edit Project slug		ProjectSlug
+	Select Visibility Level			VisibilityPrivate
+	Select Project Configuration	ConfigurationREADMEPositive
+	Submit Create project Form
+	Verify that the project could not be made
+	Verify that the error message "The form contains the following error: Name can contain only letters, digits, emoji, '_', '.', '+', dashes, or spaces. It must start with a letter, digit, emoji, or '_'." is shown
+
+Postcondition: The user is unable to create a project with invalid project name
+
+
+Title: Project without slug
+Description: Verifies that the user cannot create a project without project slug
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page		Projects_Url
+	Select New project		
+	Select Create Blank project	
+	Input Project name				TestProject
+	Select Project Group or User	ProjectGroup
+	Verify or Edit Project slug		Empty
+	Select Visibility Level			VisibilityPrivate
+	Select Project Configuration	ConfigurationREADMEPositive
+	Submit Create project Form
+	Verify that the project could not be made
+	Verify that the Project slug field is highlighted and the message "Please fill out this field." is shown
+
+Postcondition: The user is unable to create the project without project slug
+
+
+Title: Project without group or user path
+Description: Verifies that the user cannot create a project without inserting group or user path
+Precondition: Browser is open, user is logged in GitLab
+Steps:
+	Navigate to Projects page		Projects_Url
+	Select New project		
+	Select Create Blank project	
+	Input Project name				TestProject
+	Select Project Group or User	Empty
+	Verify or Edit Project slug		ProjectSlug
+	Select Visibility Level			VisibilityPrivate
+	Select Project Configuration	ConfigurationREADMEPositive
+	Submit Create project Form
+	Verify that the project could not be made
+	Verify that the Project URL field is highlighted and the error message "Pick a group or namespace where you want to create this project." is shown
+
+Postcondition: The user is unable to create a project without group or user path

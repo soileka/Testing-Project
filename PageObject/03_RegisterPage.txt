@@ -1,0 +1,270 @@
+
+#******************** Settings ************************
+
+*** Settings ***
+
+Documentation	Testing registration functionality. Registration test scenario with valid and invalid credentials, including verification step.
+
+Pre Condition	Browser is open
+Post Condition	Browser is closed
+Tags 		Register, TS-2-Register
+
+#******************* Common Variables ********************
+
+*** Variables ***
+
+SignUp_Url = https://gitlab.com/users/sign_up
+FirstName= User
+LastName= Tester
+UserName= userte
+SecondUserName= tasterus
+Email= user.tester@usertester.com
+SecondEmail= testeruser@user.com
+Password= TestingSoftware
+VerificationCode= 823012
+Role= Other
+SignUpReason= A different reason
+WhatToDo= Create a new project
+GitLabUser= Just me
+GroupName= userte-group
+ProjectName= userte-project
+Invalid_UserName= !"#¤%
+Taken_UserName= userte
+Invalid_Email= notanemail@.com
+Invalid_Password= password
+Invalid_VerificationCode= 123456
+Empty= 
+
+#******************** Test Cases *************************
+
+# Positive Tests
+
+Title: Valid data		
+Description: Verifies that user can register with valid data
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page		SignUp_Url
+	Input First name 				FirstName
+	Input Last name					LastName
+	Input User name					UserName
+	Input Email						Email
+	Input Password					Password
+	Submit Registration Form
+	Input Email Verification Code	VerificationCode
+	Submit Email Verification
+	Verify that "Verification was succesful" message is shown
+	Verify that registration process moves on to page that includes selections for how the user plans to use GitLab
+	Select Role						Role
+	Select Reason for SignUp		SignUpReason
+	Select What to do in GitLab		WhatToDo
+	Select Who uses GitLab			GitLabUser
+	Submit selections with Continue button
+	Verify that registration process moves on to page that asks the user to create or import a project
+	Input Group name				GroupName
+	Input Project name				ProjectName
+	Submit Create Project Form
+	Verify that the user account has been created and GitLab is accessible
+
+Postcondition: User account is successfully created and user is logged in
+
+
+# Negative Tests
+
+Title: Empty first name
+Description: Verifies that user cannot register with empty first name
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			Empty
+	Input Last name				LastName
+	Input Username				SecondUserName
+	Input Email					SecondEmail
+	Input Password				Password
+	Submit Registration Form
+	Verify that registration page highlights the empty field and shows message "This field is required."
+
+Postcondition: User is unable to submit the registration form and remains on the Sign Up page.
+
+
+Title: Empty last name
+Description: Verifies that user cannot register with empty last name
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			FirstName
+	Input Last name				Empty
+	Input Username				SecondUserName
+	Input Email					SecondEmail
+	Input Password				Password
+	Submit Registration Form
+	Verify that registration page highlights the empty field and shows message "This field is required."
+
+Postcondition: User is unable to submit the registration form and remains on the Sign Up page.
+
+
+Title: Empty username
+Description: Verifies that user cannot register with empty username
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			FirstName
+	Input Last name				LastName
+	Input Username				Empty
+	Input Email					SecondEmail
+	Input Password				Password
+	Submit Registration Form
+	Verify that registration page highlights the empty field and shows message "Please create a username with only alphanumeric characters."	
+
+Postcondition: User is unable to submit the registration form and remains on the Sign Up page.
+
+
+Title: Empty email
+Description: Verifies that user cannot register with empty email
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			FirstName
+	Input Last name				LastName
+	Input Username				SecondUserName
+	Input Email					Empty
+	Input Password				Password
+	Submit Registration Form
+	Verify that registration page highlights the empty field and shows message "Please provide a valid email address."
+
+Postcondition: User is unable to submit the registration form and remains on the Sign Up page.
+
+
+Title: Empty password
+Description: Verifies that user cannot register with empty password
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			FirstName
+	Input Last name				LastName
+	Input Username				SecondUserName
+	Input Email					SecondEmail
+	Input Password				Empty
+	Submit Registration Form
+	Verify that registration page highlights the empty field and highlights the password conditions "Must be between 8-128 characters", "Cannot use common phrases (e.g. "password")" and "Cannot include your name, username, or email"
+
+Postcondition: User is unable to submit the registration form and remains on the Sign Up page.
+
+
+Title: Invalid username
+Description: Verifies that user cannot register with invalid username
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			FirstName
+	Input Last name				LastName
+	Input Username				Invalid_UserName
+	Input Email					SecondEmail
+	Input Password				Password
+	Submit Registration Form
+	Verify that registration page highlights the incorrectly filled username field and shows message "Please create a username with only alphanumeric characters."
+
+Postcondition: User is unable to submit the registration form and remains on the Sign Up page.
+
+
+Title: Invalid email
+Description: Verifies that user cannot register with invalid email
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			FirstName
+	Input Last name				LastName
+	Input Username				SecondUserName
+	Input Email					Invalid_Email
+	Input Password				Password
+	Submit Registration Form
+	Verify that registration page highlights the incorrectly filled email field and shows message "Please provide a valid email address." 
+
+Postcondition: User is unable to submit the registration form and remains on the Sign Up page.
+
+
+Title: Taken username
+Description: Verifies that user cannot register with taken username
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			FirstName
+	Input Last name				LastName
+	Input Username				Taken_UserName
+	Input Email					SecondEmail
+	Input Password				Password
+	Submit Registration Form
+	Verify that registration page highlights the username field and shows message "Username is already taken." 
+
+Postcondition: User is unable to submit the registration form and remains on the Sign Up page.
+
+
+Title: Invalid password
+Description: Verifies that user cannot register with invalid password (password does not match the given instructions)
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			FirstName
+	Input Last name				LastName
+	Input Username				SecondUserName
+	Input Email					SecondEmail
+	Input Password				Invalid_Password
+	Submit Registration Form
+	Verify that registration page highlights the password field and highlights the password conditions that have not been met "Cannot use common phrases (e.g. "password")"
+
+Postcondition: User is unable to submit the registration form and remains on the Sign Up page.
+
+
+Title: No reCAPTCHA
+Description: Verifies that user cannot register without doing the reCAPTCHA
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			FirstName
+	Input Last name				LastName
+	Input Username				SecondUserName
+	Input Email					SecondEmail
+	Input Password				Password
+	Do not do the reCAPTCHA
+	Submit Registration Form
+	Verify that registration page asks the user to complete verification to sign up.
+
+Postcondition: User is unable to submit the registration form and remains on the Sign Up page.
+
+
+Title: Expired verification code
+Description: Verifies that user cannot verify the email address with expired code
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page	SignUp_Url
+	Input First name 			FirstName
+	Input Last name				LastName
+	Input Username				SecondUserName
+	Input Email					SecondEmail
+	Input Password				Password
+	Do the reCAPTCHA
+	Submit Registration Form
+	Wait for the verification code to expire and then input the verification code
+	Verify the verification page highlights the Verification code field and shows error message "The code has expired. Send a new code and try again."
+
+Postcondition: User is unable to verify the email address and remains on the Verification page.
+
+
+Title: Invalid verification code
+Description: Verifies that user cannot verify the email address with wrong code
+Precondition: Browser is open
+Steps:
+	Navigate to Sign Up page		SignUp_Url
+	Input First name 				FirstName
+	Input Last name					LastName
+	Input Username					SecondUserName
+	Input Email						SecondEmail
+	Input Password					Password
+	Do the reCAPTCHA
+	Submit Registration Form
+	Input Email Verification Code 	Invalid_VerificationCode
+	Submit Email Verification
+	Verify that the Verification code field is highlighted and an error message "The code is incorrect. Enter it again, or send a new code." is shown
+
+Postcondition: User is unable to verify the account with invalid verification code and remains on the Verification page.
+
+
