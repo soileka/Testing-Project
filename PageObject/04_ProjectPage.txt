@@ -198,7 +198,7 @@ Steps:
 	Select Visibility Level			VisibilityPrivate
 	Select Project Configuration	ConfigurationREADMEPositive
 	Submit Create project Form
-	Verify that hte project could not be made
+	Verify that the project could not be made
 	Verify that the Project name field is highlighted and the message "Please fill out this field." is shown
 
 Postcondition: The user is unable to create a project without inserting project name
