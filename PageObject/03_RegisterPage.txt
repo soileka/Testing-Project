@@ -52,7 +52,7 @@ Steps:
 	Submit Registration Form
 	Input Email Verification Code	VerificationCode
 	Submit Email Verification
-	Verify that "Verification was succesful" message is shown
+	Verify that "Verification was successful" message is shown
 	Verify that registration process moves on to page that includes selections for how the user plans to use GitLab
 	Select Role						Role
 	Select Reason for SignUp		SignUpReason
