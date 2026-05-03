@@ -1,11 +1,11 @@
 
 ## Summary (Summarize the bug encountered concisely)
 
-There is a typo when creating a new project in "Create new project" page. Instead of "Create blank project" it says "Create black project"
+There is a typo when creating a new project on the "Create new project" page. Instead of "Create blank project" it says "Create black project"
 
 ## Steps to reproduce     
 
-Navigata to "https://gitlab.com/projects/new"
+Navigate to "https://gitlab.com/projects/new"
 The first option says "Create black project"
 
 ## What is the current bug behavior?
