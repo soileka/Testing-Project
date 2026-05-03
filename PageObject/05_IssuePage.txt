@@ -52,7 +52,7 @@ Steps:
 	Submit Save changes
 	Verify that the issue's title has been updated
 
-Postcondition: The user has successfully changes the issue's title
+Postcondition: The user has successfully changed the issue's title
 
 
 Title: New issue with same title
